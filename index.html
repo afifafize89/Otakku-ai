@@ -1,204 +1,304 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OTAKKU AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<title>OTAKKU AI</title>
 
-    body {
-      margin: 0;
-      background: #f4f6f8;
-      color: #222;
-    }
+<style>
 
-    .app {
-      max-width: 500px;
-      margin: auto;
-      min-height: 100vh;
-      background: white;
-    }
+*{
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
-    header {
-      padding: 35px 25px 25px;
-      background: #111827;
-      color: white;
-      border-radius: 0 0 25px 25px;
-    }
+body{
+margin:0;
+background:#f1f3f5;
+color:#222;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 32px;
-    }
+.app{
+max-width:520px;
+margin:auto;
+min-height:100vh;
+background:white;
+}
 
-    header p {
-      margin: 8px 0 0;
-      color: #d1d5db;
-    }
+header{
+background:#111827;
+color:white;
+padding:30px 22px;
+border-radius:0 0 25px 25px;
+}
 
-    .content {
-      padding: 25px;
-    }
+header h1{
+margin:0;
+font-size:30px;
+}
 
-    .box {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 18px;
-    }
+header p{
+margin:8px 0 0;
+color:#d1d5db;
+}
 
-    .box h2 {
-      margin-top: 0;
-      font-size: 20px;
-    }
+.content{
+padding:20px;
+}
 
-    textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 15px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-      resize: none;
-      font-size: 16px;
-    }
+.box{
+background:#f8fafc;
+border:1px solid #e5e7eb;
+border-radius:18px;
+padding:18px;
+margin-bottom:18px;
+}
 
-    button {
-      width: 100%;
-      padding: 15px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 12px;
-      background: #111827;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+h2{
+font-size:19px;
+margin-top:0;
+}
 
-    button:hover {
-      opacity: 0.9;
-    }
+textarea,
+input{
+width:100%;
+padding:14px;
+border:1px solid #d1d5db;
+border-radius:12px;
+font-size:16px;
+}
 
-    .memory {
-      padding: 12px;
-      background: white;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      margin-top: 10px;
-    }
+textarea{
+height:100px;
+resize:none;
+}
 
-    .empty {
-      color: #6b7280;
-      font-size: 14px;
-    }
-  </style>
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:0;
+border-radius:12px;
+background:#111827;
+color:white;
+font-size:16px;
+font-weight:bold;
+}
+
+.memory{
+background:white;
+border:1px solid #e5e7eb;
+border-radius:12px;
+padding:14px;
+margin-top:10px;
+}
+
+.memory small{
+color:#6b7280;
+}
+
+.delete{
+background:#dc2626;
+margin-top:8px;
+font-size:13px;
+padding:9px;
+}
+
+.empty{
+color:#6b7280;
+font-size:14px;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <header>
-    <h1>🧠 OTAKKU AI</h1>
-    <p>Biar aku yang ingat.</p>
-  </header>
+<header>
 
-  <div class="content">
+<h1>🧠 OTAKKU AI</h1>
 
-    <div class="box">
-      <h2>📝 Apa yang kau nak aku ingat?</h2>
+<p>Biar aku yang ingat.</p>
 
-      <textarea
-        id="memoryInput"
-        placeholder="Contoh: Aku letak kunci motor dalam laci bilik...">
-      </textarea>
+</header>
 
-      <button onclick="saveMemory()">
-        💾 Simpan Memory
-      </button>
-    </div>
+<div class="content">
 
-    <div class="box">
-      <h2>🧠 Memory Aku</h2>
+<div class="box">
 
-      <div id="memoryList">
-        <div class="empty">
-          Belum ada memory disimpan.
-        </div>
-      </div>
-    </div>
+<h2>📝 Simpan Memory</h2>
 
-  </div>
+<textarea
+id="memoryInput"
+placeholder="Contoh: Kunci motor aku sangkut tepi pintu utama.">
+</textarea>
+
+<button onclick="saveMemory()">
+💾 Simpan Memory
+</button>
 
 </div>
 
+
+<div class="box">
+
+<h2>🔍 Cari Memory</h2>
+
+<input
+id="searchInput"
+placeholder="Contoh: kunci motor"
+oninput="displayMemories()">
+
+</div>
+
+
+<div class="box">
+
+<h2>🧠 Memory Aku</h2>
+
+<div id="memoryList"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
 <script>
 
-function saveMemory() {
+function getMemories(){
 
-  const input = document.getElementById("memoryInput");
-  const text = input.value.trim();
+return JSON.parse(
+localStorage.getItem("otakku_memories")
+) || [];
 
-  if (text === "") {
-    alert("Tulis dulu apa yang kau nak aku ingat.");
-    return;
-  }
-
-  let memories =
-    JSON.parse(localStorage.getItem("otakku_memories")) || [];
-
-  memories.push({
-    text: text,
-    date: new Date().toLocaleString("ms-MY")
-  });
-
-  localStorage.setItem(
-    "otakku_memories",
-    JSON.stringify(memories)
-  );
-
-  input.value = "";
-
-  displayMemories();
 }
 
-function displayMemories() {
 
-  const list = document.getElementById("memoryList");
+function saveMemory(){
 
-  let memories =
-    JSON.parse(localStorage.getItem("otakku_memories")) || [];
+const input =
+document.getElementById("memoryInput");
 
-  if (memories.length === 0) {
+const text =
+input.value.trim();
 
-    list.innerHTML =
-      '<div class="empty">Belum ada memory disimpan.</div>';
+if(!text){
 
-    return;
-  }
+alert("Tulis dulu apa yang kau nak aku ingat.");
 
-  list.innerHTML = "";
+return;
 
-  memories.reverse().forEach(memory => {
-
-    const div = document.createElement("div");
-
-    div.className = "memory";
-
-    div.innerHTML =
-      "<strong>" + memory.text + "</strong>" +
-      "<br><small>" + memory.date + "</small>";
-
-    list.appendChild(div);
-
-  });
 }
+
+let memories=getMemories();
+
+memories.push({
+
+text:text,
+
+date:new Date().toLocaleString("ms-MY")
+
+});
+
+localStorage.setItem(
+"otakku_memories",
+JSON.stringify(memories)
+);
+
+input.value="";
+
+displayMemories();
+
+}
+
+
+function deleteMemory(index){
+
+let memories=getMemories();
+
+memories.splice(index,1);
+
+localStorage.setItem(
+"otakku_memories",
+JSON.stringify(memories)
+);
+
+displayMemories();
+
+}
+
+
+function displayMemories(){
+
+const list=
+document.getElementById("memoryList");
+
+const search=
+document.getElementById("searchInput")
+.value
+.toLowerCase();
+
+let memories=getMemories();
+
+const filtered=memories
+.map((memory,index)=>({
+memory,
+index
+}))
+.filter(item=>
+item.memory.text
+.toLowerCase()
+.includes(search)
+);
+
+if(filtered.length===0){
+
+list.innerHTML=
+'<div class="empty">Memory tidak dijumpai.</div>';
+
+return;
+
+}
+
+list.innerHTML="";
+
+filtered.reverse().forEach(item=>{
+
+const div=document.createElement("div");
+
+div.className="memory";
+
+div.innerHTML=
+
+"<strong>"
++
+item.memory.text
++
+"</strong><br>"
++
+"<small>"
++
+item.memory.date
++
+"</small>"
++
+"<button class='delete' onclick='deleteMemory("
++
+item.index
++
+")'>🗑️ Padam</button>";
+
+list.appendChild(div);
+
+});
+
+}
+
 
 displayMemories();
 
