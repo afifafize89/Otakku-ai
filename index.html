@@ -7,7 +7,6 @@
 <title>OTAKKU AI</title>
 
 <style>
-
 *{
 box-sizing:border-box;
 font-family:Arial,sans-serif;
@@ -100,16 +99,22 @@ color:#6b7280;
 
 .delete{
 background:#dc2626;
-margin-top:8px;
 font-size:13px;
 padding:9px;
+}
+
+.answer{
+background:#eef2ff;
+border-radius:12px;
+padding:15px;
+margin-top:12px;
+line-height:1.5;
 }
 
 .empty{
 color:#6b7280;
 font-size:14px;
 }
-
 </style>
 </head>
 
@@ -118,14 +123,32 @@ font-size:14px;
 <div class="app">
 
 <header>
-
 <h1>🧠 OTAKKU AI</h1>
-
 <p>Biar aku yang ingat.</p>
-
 </header>
 
 <div class="content">
+
+<!-- TANYA OTAKKU -->
+
+<div class="box">
+
+<h2>🤖 Tanya OTAKKU</h2>
+
+<input
+id="question"
+placeholder="Contoh: Kunci motor aku dekat mana?">
+
+<button onclick="askOtakku()">
+🧠 Tanya
+</button>
+
+<div id="answer"></div>
+
+</div>
+
+
+<!-- SIMPAN MEMORY -->
 
 <div class="box">
 
@@ -143,17 +166,21 @@ placeholder="Contoh: Kunci motor aku sangkut tepi pintu utama.">
 </div>
 
 
+<!-- SEARCH -->
+
 <div class="box">
 
 <h2>🔍 Cari Memory</h2>
 
 <input
 id="searchInput"
-placeholder="Contoh: kunci motor"
+placeholder="Contoh: kunci"
 oninput="displayMemories()">
 
 </div>
 
+
+<!-- MEMORY -->
 
 <div class="box">
 
@@ -178,6 +205,8 @@ localStorage.getItem("otakku_memories")
 
 }
 
+
+/* SIMPAN MEMORY */
 
 function saveMemory(){
 
@@ -217,6 +246,8 @@ displayMemories();
 }
 
 
+/* PADAM MEMORY */
+
 function deleteMemory(index){
 
 let memories=getMemories();
@@ -233,6 +264,8 @@ displayMemories();
 }
 
 
+/* CARI MEMORY */
+
 function displayMemories(){
 
 const list=
@@ -241,7 +274,8 @@ document.getElementById("memoryList");
 const search=
 document.getElementById("searchInput")
 .value
-.toLowerCase();
+.toLowerCase()
+.trim();
 
 let memories=getMemories();
 
@@ -274,7 +308,6 @@ const div=document.createElement("div");
 div.className="memory";
 
 div.innerHTML=
-
 "<strong>"
 +
 item.memory.text
@@ -296,6 +329,134 @@ item.index
 list.appendChild(div);
 
 });
+
+}
+
+
+/* TANYA OTAKKU */
+
+function askOtakku(){
+
+const question=
+document.getElementById("question")
+.value
+.toLowerCase()
+.trim();
+
+const answer=
+document.getElementById("answer");
+
+if(!question){
+
+answer.innerHTML=
+'<div class="answer">Tanya aku sesuatu dulu 😊</div>';
+
+return;
+
+}
+
+const memories=getMemories();
+
+if(memories.length===0){
+
+answer.innerHTML=
+'<div class="answer">Aku belum ada memory. Cuba simpan sesuatu dulu.</div>';
+
+return;
+
+}
+
+
+/*
+  Ambil perkataan penting daripada soalan.
+  Perkataan umum dibuang supaya carian
+  lebih berguna.
+*/
+
+const stopWords=[
+"aku",
+"kau",
+"apa",
+"mana",
+"kat",
+"dekat",
+"di",
+"ke",
+"yang",
+"itu",
+"ini",
+"ada",
+"tak",
+"tidak",
+"pun",
+"nak",
+"ingin",
+"boleh",
+"tahu",
+"tolong",
+"ingatkan"
+];
+
+const words=question
+.replace(/[?!.,]/g,"")
+.split(/\s+/)
+.filter(word=>
+word.length>2 &&
+!stopWords.includes(word)
+);
+
+
+/*
+  Cari memory berdasarkan perkataan
+  yang sama.
+*/
+
+let bestMemory=null;
+let bestScore=0;
+
+memories.forEach(memory=>{
+
+const text=
+memory.text.toLowerCase();
+
+let score=0;
+
+words.forEach(word=>{
+
+if(text.includes(word)){
+score++;
+}
+
+});
+
+if(score>bestScore){
+
+bestScore=score;
+bestMemory=memory;
+
+}
+
+});
+
+
+if(bestMemory && bestScore>0){
+
+answer.innerHTML=
+'<div class="answer">' +
+'💡 <strong>Aku ingat:</strong><br><br>' +
+bestMemory.text +
+'</div>';
+
+}else{
+
+answer.innerHTML=
+'<div class="answer">' +
+'🤔 Aku belum jumpa jawapan dalam memory aku.' +
+'<br><br>' +
+'Cuba simpan perkara itu dulu.' +
+'</div>';
+
+}
 
 }
 
