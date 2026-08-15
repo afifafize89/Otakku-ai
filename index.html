@@ -184,7 +184,9 @@ placeholder="Contoh: Kunci motor aku dekat mana?">
 id="memoryInput"
 placeholder="Contoh: Kunci motor aku sangkut tepi pintu utama.">
 </textarea>
-
+<button onclick="startVoice()">
+🎙️ Cakap
+</button>
 <button onclick="saveMemory()">
 💾 Simpan Memory
 </button>
@@ -619,7 +621,53 @@ function askOtakku() {
 displayMemories();
 
 displayHistory();
+function startVoice() {
 
+  if (!('webkitSpeechRecognition' in window) &&
+      !('SpeechRecognition' in window)) {
+
+    alert("Maaf, browser ini belum menyokong fungsi suara.");
+
+    return;
+  }
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  const recognition =
+    new SpeechRecognition();
+
+  recognition.lang = "ms-MY";
+
+  recognition.continuous = false;
+
+  recognition.interimResults = false;
+
+  recognition.start();
+
+  recognition.onstart = function() {
+
+    alert("🎙️ Silakan bercakap...");
+
+  };
+
+  recognition.onresult = function(event) {
+
+    const text =
+      event.results[0][0].transcript;
+
+    document.getElementById("memoryInput").value = text;
+
+  };
+
+  recognition.onerror = function(event) {
+
+    alert("❌ Tak dapat dengar suara. Cuba lagi.");
+
+  };
+
+}
 </script>
 
 </body>
