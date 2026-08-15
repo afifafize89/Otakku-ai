@@ -3,117 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>OTAKKU AI</title>
 
 <style>
-*{
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-body{
-margin:0;
-background:#f1f3f5;
-color:#222;
+body {
+  margin: 0;
+  background: #f1f3f5;
+  color: #222;
 }
 
-.app{
-max-width:520px;
-margin:auto;
-min-height:100vh;
-background:white;
+.app {
+  max-width: 520px;
+  margin: auto;
+  min-height: 100vh;
+  background: white;
 }
 
-header{
-background:#111827;
-color:white;
-padding:30px 22px;
-border-radius:0 0 25px 25px;
+header {
+  background: #111827;
+  color: white;
+  padding: 30px 22px;
+  border-radius: 0 0 25px 25px;
 }
 
-header h1{
-margin:0;
-font-size:30px;
+header h1 {
+  margin: 0;
+  font-size: 30px;
 }
 
-header p{
-margin:8px 0 0;
-color:#d1d5db;
+header p {
+  margin: 8px 0 0;
+  color: #d1d5db;
 }
 
-.content{
-padding:20px;
+.content {
+  padding: 20px;
 }
 
-.box{
-background:#f8fafc;
-border:1px solid #e5e7eb;
-border-radius:18px;
-padding:18px;
-margin-bottom:18px;
+.box {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 18px;
 }
 
-h2{
-font-size:19px;
-margin-top:0;
+h2 {
+  font-size: 19px;
+  margin-top: 0;
 }
 
 textarea,
-input{
-width:100%;
-padding:14px;
-border:1px solid #d1d5db;
-border-radius:12px;
-font-size:16px;
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 16px;
 }
 
-textarea{
-height:100px;
-resize:none;
+textarea {
+  height: 100px;
+  resize: none;
 }
 
-button{
-width:100%;
-padding:14px;
-margin-top:10px;
-border:0;
-border-radius:12px;
-background:#111827;
-color:white;
-font-size:16px;
-font-weight:bold;
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 12px;
+  background: #111827;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.memory{
-background:white;
-border:1px solid #e5e7eb;
-border-radius:12px;
-padding:14px;
-margin-top:10px;
+.answer {
+  background: #eef2ff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 12px;
+  line-height: 1.5;
 }
 
-.memory small{
-color:#6b7280;
+.memory {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 10px;
 }
 
-.delete{
-background:#dc2626;
-font-size:13px;
-padding:9px;
+.memory small {
+  color: #6b7280;
 }
 
-.answer{
-background:#eef2ff;
-border-radius:12px;
-padding:15px;
-margin-top:12px;
-line-height:1.5;
+.delete {
+  background: #dc2626;
+  font-size: 13px;
+  padding: 9px;
 }
 
-.empty{
-color:#6b7280;
-font-size:14px;
+.history {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 10px;
+}
+
+.history-question {
+  font-weight: bold;
+}
+
+.history-answer {
+  margin-top: 6px;
+  color: #374151;
+}
+
+.history-date {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.clear {
+  background: #6b7280;
+}
+
+.empty {
+  color: #6b7280;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -129,7 +155,7 @@ font-size:14px;
 
 <div class="content">
 
-<!-- TANYA OTAKKU -->
+<!-- TANYA -->
 
 <div class="box">
 
@@ -152,7 +178,7 @@ placeholder="Contoh: Kunci motor aku dekat mana?">
 
 <div class="box">
 
-<h2>📝 Simpan Memory</h2>
+<h2>💾 Simpan Memory</h2>
 
 <textarea
 id="memoryInput"
@@ -166,7 +192,7 @@ placeholder="Contoh: Kunci motor aku sangkut tepi pintu utama.">
 </div>
 
 
-<!-- SEARCH -->
+<!-- CARI -->
 
 <div class="box">
 
@@ -177,16 +203,22 @@ id="searchInput"
 placeholder="Contoh: kunci"
 oninput="displayMemories()">
 
+<div id="memoryList"></div>
+
 </div>
 
 
-<!-- MEMORY -->
+<!-- SEJARAH -->
 
 <div class="box">
 
-<h2>🧠 Memory Aku</h2>
+<h2>📜 Sejarah Pertanyaan</h2>
 
-<div id="memoryList"></div>
+<div id="historyList"></div>
+
+<button class="clear" onclick="clearHistory()">
+🗑️ Padam Semua Sejarah
+</button>
 
 </div>
 
@@ -197,271 +229,396 @@ oninput="displayMemories()">
 
 <script>
 
-function getMemories(){
+/* =========================
+   MEMORY
+========================= */
 
-return JSON.parse(
-localStorage.getItem("otakku_memories")
-) || [];
+function getMemories() {
+
+  return JSON.parse(
+    localStorage.getItem("otakku_memories")
+  ) || [];
+
+}
+
+
+/* =========================
+   SIMPAN MEMORY
+========================= */
+
+function saveMemory() {
+
+  const input =
+    document.getElementById("memoryInput");
+
+  const text =
+    input.value.trim();
+
+  if (!text) {
+
+    alert("Tulis dulu apa yang kau nak aku ingat.");
+
+    return;
+  }
+
+  let memories = getMemories();
+
+  memories.push({
+    text: text,
+    date: new Date().toLocaleString("ms-MY")
+  });
+
+  localStorage.setItem(
+    "otakku_memories",
+    JSON.stringify(memories)
+  );
+
+  input.value = "";
+
+  displayMemories();
 
 }
 
 
-/* SIMPAN MEMORY */
+/* =========================
+   PADAM MEMORY
+========================= */
 
-function saveMemory(){
+function deleteMemory(index) {
 
-const input =
-document.getElementById("memoryInput");
+  let memories = getMemories();
 
-const text =
-input.value.trim();
+  memories.splice(index, 1);
 
-if(!text){
+  localStorage.setItem(
+    "otakku_memories",
+    JSON.stringify(memories)
+  );
 
-alert("Tulis dulu apa yang kau nak aku ingat.");
-
-return;
+  displayMemories();
 
 }
 
-let memories=getMemories();
 
-memories.push({
+/* =========================
+   CARI MEMORY
+========================= */
 
-text:text,
+function displayMemories() {
 
-date:new Date().toLocaleString("ms-MY")
+  const list =
+    document.getElementById("memoryList");
 
-});
+  const search =
+    document.getElementById("searchInput")
+    .value
+    .toLowerCase()
+    .trim();
 
-localStorage.setItem(
-"otakku_memories",
-JSON.stringify(memories)
-);
+  let memories = getMemories();
 
-input.value="";
+  const filtered =
+    memories
+    .map((memory, index) => ({
+      memory,
+      index
+    }))
+    .filter(item =>
+      item.memory.text
+      .toLowerCase()
+      .includes(search)
+    );
+
+  if (filtered.length === 0) {
+
+    list.innerHTML =
+      '<div class="empty">Memory tidak dijumpai.</div>';
+
+    return;
+  }
+
+  list.innerHTML = "";
+
+  filtered.reverse().forEach(item => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "memory";
+
+    div.innerHTML =
+      "<strong>" +
+      item.memory.text +
+      "</strong><br>" +
+
+      "<small>" +
+      item.memory.date +
+      "</small>" +
+
+      "<button class='delete' onclick='deleteMemory(" +
+      item.index +
+      ")'>🗑️ Padam</button>";
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================
+   SEJARAH
+========================= */
+
+function getHistory() {
+
+  return JSON.parse(
+    localStorage.getItem("otakku_history")
+  ) || [];
+
+}
+
+
+function saveHistory(question, answer) {
+
+  let history = getHistory();
+
+  history.push({
+
+    question: question,
+
+    answer: answer,
+
+    date: new Date().toLocaleString("ms-MY")
+
+  });
+
+  localStorage.setItem(
+    "otakku_history",
+    JSON.stringify(history)
+  );
+
+  displayHistory();
+
+}
+
+
+function displayHistory() {
+
+  const list =
+    document.getElementById("historyList");
+
+  let history = getHistory();
+
+  if (history.length === 0) {
+
+    list.innerHTML =
+      '<div class="empty">Belum ada sejarah pertanyaan.</div>';
+
+    return;
+  }
+
+  list.innerHTML = "";
+
+  history
+    .slice()
+    .reverse()
+    .forEach(item => {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "history";
+
+      div.innerHTML =
+
+        "<div class='history-question'>" +
+        "👤 " +
+        item.question +
+        "</div>" +
+
+        "<div class='history-answer'>" +
+        "🧠 " +
+        item.answer +
+        "</div>" +
+
+        "<div class='history-date'>" +
+        item.date +
+        "</div>";
+
+      list.appendChild(div);
+
+    });
+
+}
+
+
+function clearHistory() {
+
+  localStorage.removeItem(
+    "otakku_history"
+  );
+
+  displayHistory();
+
+}
+
+
+/* =========================
+   TANYA OTAKKU
+========================= */
+
+function askOtakku() {
+
+  const question =
+    document.getElementById("question")
+    .value
+    .toLowerCase()
+    .trim();
+
+  const answerBox =
+    document.getElementById("answer");
+
+  if (!question) {
+
+    answerBox.innerHTML =
+      '<div class="answer">Tanya aku sesuatu dulu 😊</div>';
+
+    return;
+  }
+
+  const memories = getMemories();
+
+  if (memories.length === 0) {
+
+    const answer =
+      "Aku belum ada memory. Cuba simpan sesuatu dulu.";
+
+    answerBox.innerHTML =
+      '<div class="answer">' +
+      answer +
+      '</div>';
+
+    saveHistory(question, answer);
+
+    return;
+  }
+
+
+  const stopWords = [
+
+    "aku",
+    "kau",
+    "apa",
+    "mana",
+    "kat",
+    "dekat",
+    "di",
+    "ke",
+    "yang",
+    "itu",
+    "ini",
+    "ada",
+    "tak",
+    "tidak",
+    "pun",
+    "nak",
+    "ingin",
+    "tahu",
+    "tolong",
+    "ingatkan"
+
+  ];
+
+
+  const words =
+    question
+    .replace(/[?!.,]/g, "")
+    .split(/\s+/)
+    .filter(word =>
+      word.length > 2 &&
+      !stopWords.includes(word)
+    );
+
+
+  let bestMemory = null;
+  let bestScore = 0;
+
+
+  memories.forEach(memory => {
+
+    const text =
+      memory.text.toLowerCase();
+
+    let score = 0;
+
+    words.forEach(word => {
+
+      if (text.includes(word)) {
+
+        score++;
+
+      }
+
+    });
+
+
+    if (score > bestScore) {
+
+      bestScore = score;
+
+      bestMemory = memory;
+
+    }
+
+  });
+
+
+  let finalAnswer;
+
+
+  if (bestMemory && bestScore > 0) {
+
+    finalAnswer =
+      bestMemory.text;
+
+    answerBox.innerHTML =
+      '<div class="answer">' +
+      '💡 <strong>Aku ingat:</strong><br><br>' +
+      finalAnswer +
+      '</div>';
+
+  } else {
+
+    finalAnswer =
+      "Aku belum jumpa jawapan dalam memory aku.";
+
+    answerBox.innerHTML =
+      '<div class="answer">' +
+      '🤔 ' +
+      finalAnswer +
+      '<br><br>' +
+      'Cuba simpan perkara itu dulu.' +
+      '</div>';
+
+  }
+
+
+  saveHistory(
+    question,
+    finalAnswer
+  );
+
+}
+
+
+/* =========================
+   START
+========================= */
 
 displayMemories();
 
-}
-
-
-/* PADAM MEMORY */
-
-function deleteMemory(index){
-
-let memories=getMemories();
-
-memories.splice(index,1);
-
-localStorage.setItem(
-"otakku_memories",
-JSON.stringify(memories)
-);
-
-displayMemories();
-
-}
-
-
-/* CARI MEMORY */
-
-function displayMemories(){
-
-const list=
-document.getElementById("memoryList");
-
-const search=
-document.getElementById("searchInput")
-.value
-.toLowerCase()
-.trim();
-
-let memories=getMemories();
-
-const filtered=memories
-.map((memory,index)=>({
-memory,
-index
-}))
-.filter(item=>
-item.memory.text
-.toLowerCase()
-.includes(search)
-);
-
-if(filtered.length===0){
-
-list.innerHTML=
-'<div class="empty">Memory tidak dijumpai.</div>';
-
-return;
-
-}
-
-list.innerHTML="";
-
-filtered.reverse().forEach(item=>{
-
-const div=document.createElement("div");
-
-div.className="memory";
-
-div.innerHTML=
-"<strong>"
-+
-item.memory.text
-+
-"</strong><br>"
-+
-"<small>"
-+
-item.memory.date
-+
-"</small>"
-+
-"<button class='delete' onclick='deleteMemory("
-+
-item.index
-+
-")'>🗑️ Padam</button>";
-
-list.appendChild(div);
-
-});
-
-}
-
-
-/* TANYA OTAKKU */
-
-function askOtakku(){
-
-const question=
-document.getElementById("question")
-.value
-.toLowerCase()
-.trim();
-
-const answer=
-document.getElementById("answer");
-
-if(!question){
-
-answer.innerHTML=
-'<div class="answer">Tanya aku sesuatu dulu 😊</div>';
-
-return;
-
-}
-
-const memories=getMemories();
-
-if(memories.length===0){
-
-answer.innerHTML=
-'<div class="answer">Aku belum ada memory. Cuba simpan sesuatu dulu.</div>';
-
-return;
-
-}
-
-
-/*
-  Ambil perkataan penting daripada soalan.
-  Perkataan umum dibuang supaya carian
-  lebih berguna.
-*/
-
-const stopWords=[
-"aku",
-"kau",
-"apa",
-"mana",
-"kat",
-"dekat",
-"di",
-"ke",
-"yang",
-"itu",
-"ini",
-"ada",
-"tak",
-"tidak",
-"pun",
-"nak",
-"ingin",
-"boleh",
-"tahu",
-"tolong",
-"ingatkan"
-];
-
-const words=question
-.replace(/[?!.,]/g,"")
-.split(/\s+/)
-.filter(word=>
-word.length>2 &&
-!stopWords.includes(word)
-);
-
-
-/*
-  Cari memory berdasarkan perkataan
-  yang sama.
-*/
-
-let bestMemory=null;
-let bestScore=0;
-
-memories.forEach(memory=>{
-
-const text=
-memory.text.toLowerCase();
-
-let score=0;
-
-words.forEach(word=>{
-
-if(text.includes(word)){
-score++;
-}
-
-});
-
-if(score>bestScore){
-
-bestScore=score;
-bestMemory=memory;
-
-}
-
-});
-
-
-if(bestMemory && bestScore>0){
-
-answer.innerHTML=
-'<div class="answer">' +
-'💡 <strong>Aku ingat:</strong><br><br>' +
-bestMemory.text +
-'</div>';
-
-}else{
-
-answer.innerHTML=
-'<div class="answer">' +
-'🤔 Aku belum jumpa jawapan dalam memory aku.' +
-'<br><br>' +
-'Cuba simpan perkara itu dulu.' +
-'</div>';
-
-}
-
-}
-
-
-displayMemories();
+displayHistory();
 
 </script>
 
