@@ -164,7 +164,9 @@ button {
 <input
 id="question"
 placeholder="Contoh: Kunci motor aku dekat mana?">
-
+<button onclick="voiceQuestion()">
+🎙️ Tanya Dengan Suara
+</button>
 <button onclick="askOtakku()">
 🧠 Tanya
 </button>
@@ -662,6 +664,49 @@ function startVoice() {
   };
 
   recognition.onerror = function(event) {
+
+    alert("❌ Tak dapat dengar suara. Cuba lagi.");
+
+  };
+
+}function voiceQuestion() {
+
+  if (!('webkitSpeechRecognition' in window) &&
+      !('SpeechRecognition' in window)) {
+
+    alert("Maaf, browser ini belum menyokong fungsi suara.");
+    return;
+  }
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  const recognition =
+    new SpeechRecognition();
+
+  recognition.lang = "ms-MY";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.start();
+
+  recognition.onstart = function() {
+    alert("🎙️ Silakan tanya...");
+  };
+
+  recognition.onresult = function(event) {
+
+    const text =
+      event.results[0][0].transcript;
+
+    document.getElementById("question").value = text;
+
+    // Terus jalankan fungsi Tanya
+    askOtakku();
+  };
+
+  recognition.onerror = function() {
 
     alert("❌ Tak dapat dengar suara. Cuba lagi.");
 
