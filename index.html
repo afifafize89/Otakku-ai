@@ -908,6 +908,63 @@ displayReminders();
     });
 
 }
+  function checkReminders() {
+
+  if (!("Notification" in window)) {
+    return;
+  }
+
+  if (Notification.permission !== "granted") {
+    return;
+  }
+
+  const reminders = getReminders();
+
+  const now = new Date();
+
+  reminders.forEach((reminder, index) => {
+
+    const reminderTime =
+      new Date(
+        reminder.date + "T" + reminder.time
+      );
+
+    if (
+      now >= reminderTime &&
+      !reminder.notified
+    ) {
+
+      new Notification("🧠 OTAKKU AI", {
+        body: "⏰ " + reminder.text
+      });
+
+      reminder.notified = true;
+
+    }
+
+  });
+
+  localStorage.setItem(
+    "otakku_reminders",
+    JSON.stringify(reminders)
+  );
+
+  displayReminders();
+
+}
+
+
+/* Semak setiap 30 saat ketika OTAKKU sedang dibuka */
+
+setInterval(
+  checkReminders,
+  30000
+);
+
+
+/* Semak sebaik sahaja OTAKKU dibuka */
+
+checkReminders();
 </script>
 
 </body>
