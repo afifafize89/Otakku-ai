@@ -969,6 +969,25 @@ setInterval(
 checkReminders();
 function testNotification() {
 
+  if (!("serviceWorker" in navigator)) {
+    alert("❌ Service Worker tidak disokong.");
+    return;
+  }
+
+  navigator.serviceWorker.ready.then(function(registration) {
+
+    registration.showNotification("🧠 OTAKKU AI", {
+      body: "🧪 TEST BERJAYA! Notification OTAKKU berfungsi."
+    });
+
+  }).catch(function(error) {
+
+    alert("❌ Notification gagal: " + error);
+
+  });
+
+} {
+
   if (!("Notification" in window)) {
     alert("❌ Browser tidak menyokong notification.");
     return;
@@ -982,7 +1001,17 @@ function testNotification() {
   new Notification("🧠 OTAKKU AI", {
     body: "🧪 TEST BERJAYA! Notification OTAKKU berfungsi."
   });
-
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("sw.js")
+      .then(function() {
+        console.log("OTAKKU Service Worker aktif");
+      })
+      .catch(function(error) {
+        console.log("Service Worker gagal:", error);
+      });
+  });
+}
   }</script>
 
 </body>
