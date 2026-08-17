@@ -163,7 +163,11 @@ button {
 <input
 id="reminderText"
 placeholder="Contoh: Bayar bil elektrik">
+<button onclick="enableNotifications()">
+🔔 Aktifkan Notification
+</button>
 
+<div id="notificationStatus"></div>
 <br><br>
 
 <input
@@ -869,6 +873,41 @@ function displayReminders() {
 
 
 displayReminders();
+  function enableNotifications() {
+
+  const status =
+    document.getElementById("notificationStatus");
+
+  if (!("Notification" in window)) {
+
+    status.innerHTML =
+      "❌ Browser ini tidak menyokong notification.";
+
+    return;
+  }
+
+  Notification.requestPermission()
+    .then(function(permission) {
+
+      if (permission === "granted") {
+
+        status.innerHTML =
+          "✅ Notification OTAKKU sudah diaktifkan.";
+
+        new Notification("🧠 OTAKKU AI", {
+          body: "Notification berjaya! Aku dah boleh hantar pemberitahuan."
+        });
+
+      } else {
+
+        status.innerHTML =
+          "⚠️ Notification belum dibenarkan.";
+
+      }
+
+    });
+
+}
 </script>
 
 </body>
