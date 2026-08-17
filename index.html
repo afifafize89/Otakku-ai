@@ -154,7 +154,35 @@ button {
 </header>
 
 <div class="content">
+<!-- REMINDER -->
 
+<div class="box">
+
+<h2>⏰ Reminder</h2>
+
+<input
+id="reminderText"
+placeholder="Contoh: Bayar bil elektrik">
+
+<br><br>
+
+<input
+id="reminderDate"
+type="date">
+
+<br><br>
+
+<input
+id="reminderTime"
+type="time">
+
+<button onclick="saveReminder()">
+⏰ Simpan Reminder
+</button>
+
+<div id="reminderList"></div>
+
+</div>
 <!-- TANYA -->
 
 <div class="box">
@@ -712,7 +740,135 @@ function startVoice() {
 
   };
 
+}function getReminders() {
+
+  return JSON.parse(
+    localStorage.getItem("otakku_reminders")
+  ) || [];
+
 }
+
+
+function saveReminder() {
+
+  const text =
+    document.getElementById("reminderText")
+    .value
+    .trim();
+
+  const date =
+    document.getElementById("reminderDate")
+    .value;
+
+  const time =
+    document.getElementById("reminderTime")
+    .value;
+
+  if (!text || !date || !time) {
+
+    alert("Sila isi perkara, tarikh dan masa.");
+
+    return;
+  }
+
+  let reminders = getReminders();
+
+  reminders.push({
+
+    text: text,
+
+    date: date,
+
+    time: time,
+
+    created:
+      new Date().toLocaleString("ms-MY")
+
+  });
+
+  localStorage.setItem(
+    "otakku_reminders",
+    JSON.stringify(reminders)
+  );
+
+  document.getElementById("reminderText").value = "";
+
+  document.getElementById("reminderDate").value = "";
+
+  document.getElementById("reminderTime").value = "";
+
+  displayReminders();
+
+}
+
+
+function deleteReminder(index) {
+
+  let reminders = getReminders();
+
+  reminders.splice(index, 1);
+
+  localStorage.setItem(
+    "otakku_reminders",
+    JSON.stringify(reminders)
+  );
+
+  displayReminders();
+
+}
+
+
+function displayReminders() {
+
+  const list =
+    document.getElementById("reminderList");
+
+  if (!list) return;
+
+  let reminders = getReminders();
+
+  if (reminders.length === 0) {
+
+    list.innerHTML =
+      '<div class="empty">Belum ada reminder.</div>';
+
+    return;
+  }
+
+  list.innerHTML = "";
+
+  reminders.forEach((reminder, index) => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "memory";
+
+    div.innerHTML =
+
+      "⏰ <strong>" +
+      reminder.text +
+      "</strong><br>" +
+
+      "📅 " +
+      reminder.date +
+      "<br>" +
+
+      "🕐 " +
+      reminder.time +
+
+      "<button class='delete' onclick='deleteReminder(" +
+      index +
+      ")'>🗑️ Padam</button>";
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+displayReminders();
 </script>
 
 </body>
