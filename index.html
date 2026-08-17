@@ -166,7 +166,9 @@ placeholder="Contoh: Bayar bil elektrik">
 <button onclick="enableNotifications()">
 🔔 Aktifkan Notification
 </button>
-
+<button onclick="testNotification()">
+🧪 Test Notification Sekarang
+</button>
 <div id="notificationStatus"></div>
 <br><br>
 
@@ -965,7 +967,23 @@ setInterval(
 /* Semak sebaik sahaja OTAKKU dibuka */
 
 checkReminders();
-</script>
+function testNotification() {
+
+  if (!("Notification" in window)) {
+    alert("❌ Browser tidak menyokong notification.");
+    return;
+  }
+
+  if (Notification.permission !== "granted") {
+    alert("⚠️ Sila tekan Aktifkan Notification dahulu.");
+    return;
+  }
+
+  new Notification("🧠 OTAKKU AI", {
+    body: "🧪 TEST BERJAYA! Notification OTAKKU berfungsi."
+  });
+
+  }</script>
 
 </body>
 </html>
